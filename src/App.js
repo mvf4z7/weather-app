@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Config from "./config";
+import WeatherService from "./weather-service";
+
+import "./App.css";
+
+const weatherService = new WeatherService(Config.OpenWeatherAPIKey);
+
+class App extends Component {
+  state = {
+    currentWeather: null
+  };
+
+  async componentDidMount() {
+    const currentWeather = await weatherService.getCurrentByCityName("Detroit");
+    this.setState({ currentWeather });
+  }
+
+  render() {
+    const { currentWeather } = this.state;
+
+    return (
+      <div>
+        <header>Weather App</header>
+        {currentWeather ? (
+          <div>
+            <pre>{JSON.stringify(currentWeather, null, 2)}</pre>
+          </div>
+        ) : (
+          <div>loading</div>
+        )}
+      </div>
+    );
+  }
 }
 
 export default App;
