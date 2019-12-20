@@ -1,8 +1,8 @@
-export interface IGeolocation {
+export interface Geolocation {
   latitude: number;
   longitude: number;
 }
 
 export interface IGeolocationService {
-  getCurrentPosition(): Promise<IGeolocation>;
+  getCurrentPosition(): Promise<Geolocation>;
 }

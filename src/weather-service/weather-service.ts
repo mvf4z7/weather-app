@@ -1,30 +1,34 @@
-import { IGeolocation } from "../geolocation-service";
+import { Geolocation } from "../geolocation-service";
+import { CurrentWeatherDTO, unmarshal } from "./marshaller";
 import Requester from "./requester";
+import { CurrentWeather } from "./types";
 
 class WeatherService {
-  request: any;
+  request: Requester;
 
   constructor(apiKey: string) {
     this.request = new Requester(apiKey);
   }
 
-  async getCurrentByCityName(cityName: string): Promise<object> {
-    const currentWeather = await this.request.get("/weather", {
+  async getCurrentByCityName(cityName: string): Promise<CurrentWeather> {
+    const dto: CurrentWeatherDTO = await this.request.get("/weather", {
       q: cityName,
       units: "imperial"
     });
 
-    return currentWeather;
+    return unmarshal(dto);
   }
 
-  async getCurrentByGeolocation(geolocation: IGeolocation): Promise<object> {
-    const currentWeather = await this.request.get("/weather", {
+  async getCurrentByGeolocation(
+    geolocation: Geolocation
+  ): Promise<CurrentWeather> {
+    const dto: CurrentWeatherDTO = await this.request.get("/weather", {
       lat: geolocation.latitude,
       lon: geolocation.longitude,
       units: "imperial"
     });
 
-    return currentWeather;
+    return unmarshal(dto);
   }
 }
 

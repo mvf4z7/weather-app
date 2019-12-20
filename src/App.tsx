@@ -1,17 +1,25 @@
 import React, { Component } from "react";
 
 import Config from "./config";
-import WeatherService from "./weather-service";
+import WeatherService, { CurrentWeather } from "./weather-service";
 import { GeolocationService } from "./geolocation-service";
 
 const weatherService = new WeatherService(Config.OpenWeatherAPIKey);
 const geoLocationService = new GeolocationService();
 
-class App extends Component<{}, {}> {
-  state = {
-    currentWeather: null,
-    currentPositon: null
-  };
+interface Props {}
+interface State {
+  currentWeather: CurrentWeather | null;
+}
+
+class App extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+
+    this.state = {
+      currentWeather: null
+    };
+  }
 
   async componentDidMount() {
     const currentPosition = await geoLocationService.getCurrentPosition();
@@ -25,16 +33,17 @@ class App extends Component<{}, {}> {
   render() {
     const { currentWeather } = this.state;
 
+    if (currentWeather === null) {
+      return <div>loading</div>;
+    }
+
     return (
       <div>
         <header>Weather App</header>
-        {currentWeather ? (
-          <div>
-            <pre>{JSON.stringify(currentWeather, null, 2)}</pre>
-          </div>
-        ) : (
-          <div>loading</div>
-        )}
+        <div>
+          {currentWeather.iconURL ? <img src={currentWeather.iconURL} /> : null}
+          <pre>{JSON.stringify(currentWeather, null, 2)}</pre>
+        </div>
       </div>
     );
   }

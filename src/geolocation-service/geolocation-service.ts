@@ -1,7 +1,7 @@
-import { IGeolocation, IGeolocationService } from "./types";
+import { Geolocation, IGeolocationService } from "./types";
 
 class GeolocationService implements IGeolocationService {
-  getCurrentPosition(): Promise<IGeolocation> {
+  getCurrentPosition(): Promise<Geolocation> {
     return new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(
         geolocationPosition => {
