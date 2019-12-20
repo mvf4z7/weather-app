@@ -46,12 +46,15 @@ class CurrentWeatherPage extends Component<Props, State> {
   }
 
   render() {
-    const { currentWeather, loading } = this.state;
+    const { currentWeather, errored, loading } = this.state;
 
     return (
       <>
         <h1>Current Weather</h1>
         {loading && <LoadingIndicator />}
+        {!loading && errored && (
+          <div>Oh no, somethign went wrong! Please refresh the page.</div>
+        )}
         {!loading && currentWeather && (
           <div>
             <h2>Location: {currentWeather.location.name}</h2>
