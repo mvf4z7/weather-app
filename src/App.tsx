@@ -2,18 +2,23 @@ import React, { Component } from "react";
 
 import Config from "./config";
 import WeatherService from "./weather-service";
-
-import "./App.css";
+import { GeolocationService } from "./geolocation-service";
 
 const weatherService = new WeatherService(Config.OpenWeatherAPIKey);
+const geoLocationService = new GeolocationService();
 
-class App extends Component {
+class App extends Component<{}, {}> {
   state = {
-    currentWeather: null
+    currentWeather: null,
+    currentPositon: null
   };
 
   async componentDidMount() {
-    const currentWeather = await weatherService.getCurrentByCityName("Detroit");
+    const currentPosition = await geoLocationService.getCurrentPosition();
+    const currentWeather = await weatherService.getCurrentByGeolocation(
+      currentPosition
+    );
+
     this.setState({ currentWeather });
   }
 
