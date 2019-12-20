@@ -7,7 +7,7 @@ export interface CurrentWeather {
     name: string;
   };
   temperature: {
-    current: number;
+    main: number;
     high: number;
     low: number;
   };

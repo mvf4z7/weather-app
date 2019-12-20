@@ -1,21 +1,18 @@
 import React, { Component } from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  NavLink
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import Config from "./config";
-import WeatherService, { CurrentWeather } from "./weather-service";
-import { GeolocationService } from "./geolocation-service";
+import CurrentWeatherPage from "./pages/current-weather-page";
+import { GeolocationService, Geolocation } from "./geolocation-service";
 import NavBar from "./components/NavBar";
+import WeatherService, { CurrentWeather } from "./weather-service";
 
 const weatherService = new WeatherService(Config.OpenWeatherAPIKey);
 const geoLocationService = new GeolocationService();
 
 interface Props {}
 interface State {
+  currentPosition: Geolocation | null;
   currentWeather: CurrentWeather | null;
 }
 
@@ -24,6 +21,7 @@ class App extends Component<Props, State> {
     super(props);
 
     this.state = {
+      currentPosition: null,
       currentWeather: null
     };
   }
@@ -34,11 +32,11 @@ class App extends Component<Props, State> {
       currentPosition
     );
 
-    this.setState({ currentWeather });
+    this.setState({ currentWeather, currentPosition });
   }
 
   render() {
-    const { currentWeather } = this.state;
+    const { currentPosition, currentWeather } = this.state;
 
     if (currentWeather === null) {
       return <div>loading</div>;
@@ -62,14 +60,19 @@ class App extends Component<Props, State> {
             <pre>{JSON.stringify(currentWeather, null, 2)}</pre>
           </div>
 
-          <Switch>
-            <Route path="/" exact>
-              <div>Current Page</div>
-            </Route>
-            <Route path="/forecast">
-              <div>Forecast</div>
-            </Route>
-          </Switch>
+          <main>
+            <Switch>
+              <Route path="/" exact>
+                <CurrentWeatherPage
+                  currentPosition={currentPosition}
+                  weatherService={weatherService}
+                />
+              </Route>
+              <Route path="/forecast">
+                <div>Forecast</div>
+              </Route>
+            </Switch>
+          </main>
         </div>
       </Router>
     );

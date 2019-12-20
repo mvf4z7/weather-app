@@ -28,7 +28,7 @@ export function unmarshal(dto: CurrentWeatherDTO): CurrentWeather {
       name: dto.name
     },
     temperature: {
-      current: dto.main.temp,
+      main: dto.main.temp,
       high: dto.main.temp_max,
       low: dto.main.temp_min
     },
