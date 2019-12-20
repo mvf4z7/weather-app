@@ -1,8 +1,15 @@
 import React, { Component } from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  NavLink
+} from "react-router-dom";
 
 import Config from "./config";
 import WeatherService, { CurrentWeather } from "./weather-service";
 import { GeolocationService } from "./geolocation-service";
+import NavBar from "./components/NavBar";
 
 const weatherService = new WeatherService(Config.OpenWeatherAPIKey);
 const geoLocationService = new GeolocationService();
@@ -38,13 +45,33 @@ class App extends Component<Props, State> {
     }
 
     return (
-      <div>
-        <header>Weather App</header>
+      <Router>
         <div>
-          {currentWeather.iconURL ? <img src={currentWeather.iconURL} /> : null}
-          <pre>{JSON.stringify(currentWeather, null, 2)}</pre>
+          <NavBar
+            title="Weather App"
+            items={[
+              { text: "Current", path: "/", exact: true },
+              { text: "Forecast", path: "/forecast" }
+            ]}
+          />
+
+          <div>
+            {currentWeather.iconURL ? (
+              <img src={currentWeather.iconURL} alt="currentWeather" />
+            ) : null}
+            <pre>{JSON.stringify(currentWeather, null, 2)}</pre>
+          </div>
+
+          <Switch>
+            <Route path="/" exact>
+              <div>Current Page</div>
+            </Route>
+            <Route path="/forecast">
+              <div>Forecast</div>
+            </Route>
+          </Switch>
         </div>
-      </div>
+      </Router>
     );
   }
 }

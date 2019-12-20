@@ -1,0 +1,18 @@
+.NavBar__list {
+  display: flex;
+}
+
+.NavBar__list-item {
+  list-style-type: none;
+  margin-right: 1em;
+}
+
+.NavBar__NavLink {
+  color: black;
+  text-decoration: none;
+}
+
+.NavBar__NavLink--active {
+  color: red;
+  text-decoration: underline;
+}
