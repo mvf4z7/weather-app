@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import Config from "./config";
 import CurrentWeatherPage from "./pages/current-weather-page";
+import ForecastPage from "./pages/forecast-page";
 import { GeolocationService, Geolocation } from "./geolocation-service";
 import NavBar from "./components/NavBar";
 import WeatherService, { CurrentWeather } from "./weather-service";
@@ -13,7 +14,6 @@ const geoLocationService = new GeolocationService();
 interface Props {}
 interface State {
   currentPosition: Geolocation | null;
-  currentWeather: CurrentWeather | null;
 }
 
 class App extends Component<Props, State> {
@@ -21,26 +21,17 @@ class App extends Component<Props, State> {
     super(props);
 
     this.state = {
-      currentPosition: null,
-      currentWeather: null
+      currentPosition: null
     };
   }
 
   async componentDidMount() {
     const currentPosition = await geoLocationService.getCurrentPosition();
-    const currentWeather = await weatherService.getCurrentByGeolocation(
-      currentPosition
-    );
-
-    this.setState({ currentWeather, currentPosition });
+    this.setState({ currentPosition });
   }
 
   render() {
-    const { currentPosition, currentWeather } = this.state;
-
-    if (currentWeather === null) {
-      return <div>loading</div>;
-    }
+    const { currentPosition } = this.state;
 
     return (
       <Router>
@@ -53,13 +44,6 @@ class App extends Component<Props, State> {
             ]}
           />
 
-          <div>
-            {currentWeather.iconURL ? (
-              <img src={currentWeather.iconURL} alt="currentWeather" />
-            ) : null}
-            <pre>{JSON.stringify(currentWeather, null, 2)}</pre>
-          </div>
-
           <main>
             <Switch>
               <Route path="/" exact>
@@ -69,7 +53,7 @@ class App extends Component<Props, State> {
                 />
               </Route>
               <Route path="/forecast">
-                <div>Forecast</div>
+                <ForecastPage />
               </Route>
             </Switch>
           </main>
