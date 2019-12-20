@@ -17,7 +17,7 @@ type State = {
   errored: boolean;
 };
 
-class CurrentWeatherPage extends React.Component<Props, State> {
+class CurrentWeatherPage extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
