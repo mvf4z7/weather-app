@@ -54,7 +54,7 @@ class ForecastPage extends Component<Props, State> {
   }
 
   reduceState(state: State): ReducedState {
-    const { errored, forecast, loading } = state;
+    const { forecast, loading } = state;
     if (loading) {
       return ReducedState.Loading;
     } else if (!loading && forecast) {
