@@ -15,24 +15,46 @@ const geoLocationService = new GeolocationService();
 type Props = {};
 type State = {
   currentPosition: Geolocation | null;
+  currentPositionRequestState: CurrentPositionRequestState;
 };
+
+enum CurrentPositionRequestState {
+  Uninitialized,
+  Requesting,
+  Success,
+  Fail
+}
 
 class App extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
     this.state = {
-      currentPosition: null
+      currentPosition: null,
+      currentPositionRequestState: CurrentPositionRequestState.Uninitialized
     };
   }
 
   async componentDidMount() {
-    const currentPosition = await geoLocationService.getCurrentPosition();
-    this.setState({ currentPosition });
+    try {
+      this.setState({
+        currentPositionRequestState: CurrentPositionRequestState.Requesting
+      });
+      const currentPosition = await geoLocationService.getCurrentPosition();
+      this.setState({
+        currentPosition,
+        currentPositionRequestState: CurrentPositionRequestState.Success
+      });
+    } catch (error) {
+      this.setState({
+        currentPositionRequestState: CurrentPositionRequestState.Fail,
+        currentPosition: null
+      });
+    }
   }
 
   render() {
-    const { currentPosition } = this.state;
+    const { currentPosition, currentPositionRequestState } = this.state;
 
     return (
       <Router>
@@ -45,23 +67,32 @@ class App extends Component<Props, State> {
         />
 
         <main>
-          {currentPosition === null && <LoadingIndicator />}
-          {currentPosition && (
-            <Switch>
-              <Route path="/" exact>
-                <CurrentWeatherPage
-                  currentPosition={currentPosition}
-                  weatherService={weatherService}
-                />
-              </Route>
-              <Route path="/forecast">
-                <ForecastPage
-                  currentPosition={currentPosition}
-                  weatherService={weatherService}
-                />
-              </Route>
-            </Switch>
+          {currentPositionRequestState ===
+            CurrentPositionRequestState.Requesting && <LoadingIndicator />}
+          {currentPositionRequestState === CurrentPositionRequestState.Fail && (
+            <p>
+              Yikes, we were not able to fetch your location! Make sure you have
+              location services enabled in order to use this app.
+            </p>
           )}
+          {currentPositionRequestState ===
+            CurrentPositionRequestState.Success &&
+            currentPosition && (
+              <Switch>
+                <Route path="/" exact>
+                  <CurrentWeatherPage
+                    currentPosition={currentPosition}
+                    weatherService={weatherService}
+                  />
+                </Route>
+                <Route path="/forecast">
+                  <ForecastPage
+                    currentPosition={currentPosition}
+                    weatherService={weatherService}
+                  />
+                </Route>
+              </Switch>
+            )}
         </main>
       </Router>
     );
