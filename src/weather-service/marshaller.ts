@@ -1,6 +1,8 @@
-import { CurrentWeather } from "./types";
+import { CurrentWeather, Forecast } from "./types";
+import { strict } from "assert";
+import { string, number } from "prop-types";
 
-export interface CurrentWeatherDTO {
+export type CurrentWeatherDTO = {
   coord: {
     lon: number;
     lat: number;
@@ -13,9 +15,11 @@ export interface CurrentWeatherDTO {
   };
   name: string;
   weather: Array<{ icon: string }>;
-}
+};
 
-export function unmarshal(dto: CurrentWeatherDTO): CurrentWeather {
+export function unmarshalCurrentWeather(
+  dto: CurrentWeatherDTO
+): CurrentWeather {
   const icon = dto.weather.map(w => w.icon)[0] || null;
 
   return {
@@ -33,5 +37,66 @@ export function unmarshal(dto: CurrentWeatherDTO): CurrentWeather {
       low: dto.main.temp_min
     },
     timestamp: new Date(dto.dt * 1000)
+  };
+}
+
+export type ForecastDTO = {
+  city: {
+    coord: {
+      lon: number;
+      lat: number;
+    };
+    name: string;
+  };
+  list: Array<{
+    dt_txt: string; // 2019-12-21 00:00:00"
+    main: {
+      temp: number;
+    };
+  }>;
+};
+
+export function unmarshallForecast(dto: ForecastDTO): Forecast {
+  const dates: string[] = [];
+  const tempsByDate: number[][] = [];
+
+  dto.list.forEach(forecast => {
+    const [currentDate, _] = forecast.dt_txt.split(" ");
+    const currentTemp = forecast.main.temp;
+
+    const lastDate = dates[dates.length - 1];
+    const lastDateTemps = tempsByDate[tempsByDate.length - 1];
+
+    if (currentDate !== lastDate) {
+      dates.push(currentDate);
+      tempsByDate.push([currentTemp]);
+    } else {
+      lastDateTemps.push(currentTemp);
+    }
+  });
+
+  const highsAndLows = tempsByDate.map<{ high: number; low: number }>(temps => {
+    const high = Math.max(...temps);
+    const low = Math.min(...temps);
+    return { high, low };
+  });
+
+  const days = dates.map<{
+    temperature: { high: number; low: number };
+    timestamp: Date;
+  }>((dateStr, idx) => {
+    const temperature = highsAndLows[idx];
+    return { temperature, timestamp: new Date(dateStr) };
+  });
+
+  return {
+    location: {
+      coordinates: {
+        latitude: dto.city.coord.lat,
+        longitude: dto.city.coord.lon
+      },
+      name: dto.city.name
+    },
+    days
   };
 }

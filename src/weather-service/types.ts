@@ -13,3 +13,17 @@ export interface CurrentWeather {
   };
   timestamp: Date;
 }
+
+export interface Forecast {
+  location: {
+    coordinates: Geolocation;
+    name: string;
+  };
+  days: Array<{
+    temperature: {
+      high: number;
+      low: number;
+    };
+    timestamp: Date;
+  }>;
+}

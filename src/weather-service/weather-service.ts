@@ -1,5 +1,10 @@
 import { Geolocation } from "../geolocation-service";
-import { CurrentWeatherDTO, unmarshal } from "./marshaller";
+import {
+  CurrentWeatherDTO,
+  unmarshalCurrentWeather,
+  unmarshallForecast,
+  ForecastDTO
+} from "./marshaller";
 import Requester from "./requester";
 import { CurrentWeather } from "./types";
 
@@ -16,7 +21,7 @@ class WeatherService {
       units: "imperial"
     });
 
-    return unmarshal(dto);
+    return unmarshalCurrentWeather(dto);
   }
 
   async getCurrentByGeolocation(
@@ -28,7 +33,17 @@ class WeatherService {
       units: "imperial"
     });
 
-    return unmarshal(dto);
+    return unmarshalCurrentWeather(dto);
+  }
+
+  async getForecastByGeolocation(geolocation: Geolocation): Promise<Object> {
+    const dto: ForecastDTO = await this.request.get("/forecast", {
+      lat: geolocation.latitude,
+      lon: geolocation.longitude,
+      units: "imperial"
+    });
+
+    return unmarshallForecast(dto);
   }
 }
 
