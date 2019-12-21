@@ -18,6 +18,12 @@ type State = {
   loading: boolean;
 };
 
+enum ReducedState {
+  Loading,
+  Loaded,
+  Errored
+}
+
 class ForecastPage extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -37,6 +43,7 @@ class ForecastPage extends Component<Props, State> {
     }
 
     try {
+      this.setState({ loading: true });
       const forecast = await weatherService.getForecastByGeolocation(
         currentPosition
       );
@@ -46,28 +53,50 @@ class ForecastPage extends Component<Props, State> {
     }
   }
 
+  reduceState(state: State): ReducedState {
+    const { errored, forecast, loading } = state;
+    if (loading) {
+      return ReducedState.Loading;
+    } else if (!loading && forecast) {
+      return ReducedState.Loaded;
+    } else {
+      return ReducedState.Errored;
+    }
+  }
+
   render() {
-    const { errored, forecast, loading } = this.state;
+    const { forecast } = this.state;
+    const reducedState = this.reduceState(this.state);
 
-    return (
-      <>
-        <h1>5 Day Forecast</h1>
-        {loading && <LoadingIndicator />}
-
-        {!loading && errored && (
-          <div>Oh no, somethign went wrong! Please refresh the page.</div>
-        )}
-
-        {!loading && forecast && (
+    let content;
+    switch (reducedState) {
+      case ReducedState.Loading:
+        content = <LoadingIndicator />;
+        break;
+      case ReducedState.Loaded:
+        content = (
           <>
-            <h2>Location: {forecast.location.name}</h2>
+            <h2>Location: {forecast!.location.name}</h2>
             <div className="ForecastPage__ForecastDays">
-              {forecast.days.map(day => (
+              {forecast!.days.map(day => (
                 <ForecastDay key={day.timestamp.toJSON()} day={day} />
               ))}
             </div>
           </>
-        )}
+        );
+        break;
+      case ReducedState.Errored:
+      default:
+        content = (
+          <div>Oh no, somethign went wrong! Please refresh the page.</div>
+        );
+        break;
+    }
+
+    return (
+      <>
+        <h1>5 Day Forecast</h1>
+        {content}
       </>
     );
   }
