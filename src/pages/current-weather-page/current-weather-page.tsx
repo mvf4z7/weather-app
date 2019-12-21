@@ -39,9 +39,9 @@ class CurrentWeatherPage extends Component<Props, State> {
       const currentWeather = await weatherService.getCurrentByGeolocation(
         currentPosition
       );
-      this.setState({ loading: false, currentWeather });
+      this.setState({ loading: false, currentWeather, errored: false });
     } catch (error) {
-      this.setState({ loading: false, errored: true });
+      this.setState({ loading: false, errored: true, currentWeather: null });
     }
   }
 

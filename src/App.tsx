@@ -6,15 +6,16 @@ import CurrentWeatherPage from "./pages/current-weather-page";
 import ForecastPage from "./pages/forecast-page";
 import { GeolocationService, Geolocation } from "./geolocation-service";
 import NavBar from "./components/NavBar";
-import WeatherService, { CurrentWeather } from "./weather-service";
+import WeatherService from "./weather-service";
+import LoadingIndicator from "./components/LoadingIndicator";
 
 const weatherService = new WeatherService(Config.OpenWeatherAPIKey);
 const geoLocationService = new GeolocationService();
 
-interface Props {}
-interface State {
+type Props = {};
+type State = {
   currentPosition: Geolocation | null;
-}
+};
 
 class App extends Component<Props, State> {
   constructor(props: Props) {
@@ -35,16 +36,17 @@ class App extends Component<Props, State> {
 
     return (
       <Router>
-        <div>
-          <NavBar
-            title="Weather App"
-            items={[
-              { text: "Current", path: "/", exact: true },
-              { text: "Forecast", path: "/forecast" }
-            ]}
-          />
+        <NavBar
+          title="Weather App"
+          items={[
+            { text: "Current", path: "/", exact: true },
+            { text: "Forecast", path: "/forecast" }
+          ]}
+        />
 
-          <main>
+        <main>
+          {currentPosition === null && <LoadingIndicator />}
+          {currentPosition && (
             <Switch>
               <Route path="/" exact>
                 <CurrentWeatherPage
@@ -53,11 +55,14 @@ class App extends Component<Props, State> {
                 />
               </Route>
               <Route path="/forecast">
-                <ForecastPage />
+                <ForecastPage
+                  currentPosition={currentPosition}
+                  weatherService={weatherService}
+                />
               </Route>
             </Switch>
-          </main>
-        </div>
+          )}
+        </main>
       </Router>
     );
   }

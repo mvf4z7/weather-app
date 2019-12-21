@@ -6,7 +6,7 @@ import {
   ForecastDTO
 } from "./marshaller";
 import Requester from "./requester";
-import { CurrentWeather } from "./types";
+import { CurrentWeather, Forecast } from "./types";
 
 class WeatherService {
   request: Requester;
@@ -36,7 +36,7 @@ class WeatherService {
     return unmarshalCurrentWeather(dto);
   }
 
-  async getForecastByGeolocation(geolocation: Geolocation): Promise<Object> {
+  async getForecastByGeolocation(geolocation: Geolocation): Promise<Forecast> {
     const dto: ForecastDTO = await this.request.get("/forecast", {
       lat: geolocation.latitude,
       lon: geolocation.longitude,

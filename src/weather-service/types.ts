@@ -20,6 +20,7 @@ export interface Forecast {
     name: string;
   };
   days: Array<{
+    iconURL: string | null;
     temperature: {
       high: number;
       low: number;
