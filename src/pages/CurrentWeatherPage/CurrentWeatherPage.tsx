@@ -4,7 +4,7 @@ import { Geolocation } from "../../geolocation-service";
 import LoadingIndicator from "../../components/LoadingIndicator";
 import WeatherService, { CurrentWeather } from "../../weather-service";
 
-import "./current-weather-page.css";
+import "./CurrentWeatherPage.css";
 
 type Props = {
   currentPosition: Geolocation | null;

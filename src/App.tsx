@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import Config from "./config";
-import CurrentWeatherPage from "./pages/current-weather-page";
-import ForecastPage from "./pages/forecast-page";
+import CurrentWeatherPage from "./pages/CurrentWeatherPage";
+import ForecastPage from "./pages/ForecastPage";
 import { GeolocationService, Geolocation } from "./geolocation-service";
 import NavBar from "./components/NavBar";
 import WeatherService from "./weather-service";
