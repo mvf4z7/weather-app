@@ -95,7 +95,7 @@ class ForecastPage extends Component<Props, State> {
 
     return (
       <>
-        <h1>5 Day Forecast</h1>
+        <h1>5-ish Day Forecast</h1>
         {content}
       </>
     );
