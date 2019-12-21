@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 
 import "./ForecastDay.css";
 
@@ -19,9 +19,11 @@ function ForecastDay(props: Props) {
   return (
     <div className="ForecastDay">
       {day.iconURL && <img src={day.iconURL} alt="weather icon" />}
-      <span>{day.timestamp.toLocaleDateString()}</span>
+      <span className="ForecastDay__date">
+        {day.timestamp.toLocaleDateString()}
+      </span>
       <span>high: {day.temperature.high} F</span>
-      <span>low: {day.temperature.low}</span>
+      <span>low: {day.temperature.low} F</span>
     </div>
   );
 }

@@ -1,6 +1,4 @@
 import { CurrentWeather, Forecast } from "./types";
-import { strict } from "assert";
-import { string, number } from "prop-types";
 import { findMostCommonElement } from "../utils/list-utils";
 
 export type CurrentWeatherDTO = {
@@ -66,7 +64,7 @@ export function unmarshallForecast(dto: ForecastDTO): Forecast {
   const weatherIconsByDate: string[][] = [];
 
   dto.list.forEach(forecast => {
-    const [currentDate, _] = forecast.dt_txt.split(" ");
+    const [currentDate, _ignore] = forecast.dt_txt.split(" ");
     const currentTemp = forecast.main.temp;
     const currentWeatherIcons = forecast.weather.map(weather => weather.icon);
 

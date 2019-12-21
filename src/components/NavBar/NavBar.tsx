@@ -10,8 +10,8 @@ type Props = {
 
 function NavBar({ items, title }: Props) {
   return (
-    <nav>
-      <div>{title}</div>
+    <nav className="NavBar">
+      <div className="NavBar__title">{title}</div>
       <ul className="NavBar__list">
         {items.map(item => (
           <li className="NavBar__list-item" key={`${item.text}_${item.path}`}>
