@@ -63,7 +63,7 @@ class ForecastPage extends Component<Props, State> {
             <h2>Location: {forecast.location.name}</h2>
             <div className="ForecastPage__ForecastDays">
               {forecast.days.map(day => (
-                <ForecastDay day={day} />
+                <ForecastDay key={day.timestamp.toJSON()} day={day} />
               ))}
             </div>
           </>
