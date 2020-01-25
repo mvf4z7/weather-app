@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Config from "./config";
 import CurrentWeatherPage from "./pages/CurrentWeatherPage";
 import ForecastPage from "./pages/ForecastPage";
+import HookTestPage from "./pages/HookTestPage";
 import { GeolocationService, Geolocation } from "./geolocation-service";
 import NavBar from "./components/NavBar";
 import WeatherService from "./weather-service";
@@ -90,6 +91,9 @@ class App extends Component<Props, State> {
                     currentPosition={currentPosition}
                     weatherService={weatherService}
                   />
+                </Route>
+                <Route path="/hook-test">
+                  <HookTestPage weatherService={weatherService} />
                 </Route>
               </Switch>
             )}
